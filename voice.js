@@ -25,17 +25,17 @@ module.exports = async function generateSpeech(text) {
       }
     );
 
-    const fileName = 'response.mp3';
-    const filePath = path.join(__dirname, 'public', 'audio', fileName);
-
+    const filePath = path.join(__dirname, 'public/audio/response.mp3');
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     fs.writeFileSync(filePath, response.data);
 
-    // Return the public URL for Twilio to access
-    return `https://${process.env.RENDER_EXTERNAL_HOSTNAME || 'golden-nails-voice-ai.onrender.com'}/audio/${fileName}`;
+    return `${process.env.RENDER_EXTERNAL_HOSTNAME
+      ? `https://${process.env.RENDER_EXTERNAL_HOSTNAME}`
+      : 'https://golden-nails-voice-ai.onrender.com'
+    }/audio/response.mp3`;
 
   } catch (err) {
-    console.error("Error generating ElevenLabs speech:", err.response?.data || err.message);
+    console.error("ElevenLabs error:", err.response?.data || err.message);
     return null;
   }
 };

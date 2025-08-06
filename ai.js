@@ -9,7 +9,7 @@ module.exports = async function aiReply(prompt) {
         messages: [
           {
             role: "system",
-            content: "You're a friendly receptionist for a nail salon called Golden Nails in Golden Valley, MN. Answer clearly and casually. Keep responses under 2 sentences."
+            content: "You're a helpful, casual receptionist at a nail salon in Golden Valley, MN. Keep responses short and friendly."
           },
           {
             role: "user",
@@ -27,7 +27,7 @@ module.exports = async function aiReply(prompt) {
 
     return response.data.choices[0].message.content;
   } catch (error) {
-    console.error("OpenAI API error:", error.response?.data || error.message);
-    return "Sorry, I'm having trouble responding right now.";
+    console.error("OpenAI error:", error.response?.data || error.message);
+    return "Sorry, I can't help right now.";
   }
 };
