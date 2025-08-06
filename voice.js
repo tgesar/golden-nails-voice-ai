@@ -25,11 +25,14 @@ module.exports = async function generateSpeech(text) {
       }
     );
 
-    const filePath = path.join(__dirname, 'response.mp3');
+    const fileName = 'response.mp3';
+    const filePath = path.join(__dirname, 'public', 'audio', fileName);
+
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
     fs.writeFileSync(filePath, response.data);
 
-    // You can upload this to S3 or serve it from a public endpoint — for now:
-    return 'https://your-public-server.com/response.mp3';
+    // Return the public URL for Twilio to access
+    return `https://${process.env.RENDER_EXTERNAL_HOSTNAME || 'golden-nails-voice-ai.onrender.com'}/audio/${fileName}`;
 
   } catch (err) {
     console.error("Error generating ElevenLabs speech:", err.response?.data || err.message);

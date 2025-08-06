@@ -1,16 +1,20 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 const VoiceResponse = require('twilio').twiml.VoiceResponse;
+
 const aiReply = require('./ai');
 const generateSpeech = require('./voice');
-const calendar = require('./calendar');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// Serve audio file publicly
+app.use('/audio', express.static(path.join(__dirname, 'public', 'audio')));
 
 app.post('/voice', async (req, res) => {
   const twiml = new VoiceResponse();
@@ -20,8 +24,13 @@ app.post('/voice', async (req, res) => {
     const aiResponse = await aiReply(question);
     const audioUrl = await generateSpeech(aiResponse);
 
-    twiml.play(audioUrl); // Stream ElevenLabs audio
-    twiml.pause({ length: 2 }); // Add small pause
+    if (audioUrl) {
+      twiml.play(audioUrl);
+    } else {
+      twiml.say("Sorry, I couldn't generate a response.");
+    }
+
+    twiml.pause({ length: 1 });
     twiml.say("Goodbye for now!");
 
     res.type('text/xml');
