@@ -13,9 +13,6 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Serve audio file publicly
-app.use('/audio', express.static(path.join(__dirname, 'public', 'audio')));
-
 app.post('/voice', async (req, res) => {
   const twiml = new VoiceResponse();
 
