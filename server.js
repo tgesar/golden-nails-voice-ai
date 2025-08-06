@@ -12,7 +12,9 @@ const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use('/audio', express.static(path.join(__dirname, 'public', 'audio')));
 
+// ✅ Twilio hits this route when someone calls your number
 app.post('/voice', async (req, res) => {
   const twiml = new VoiceResponse();
 
@@ -41,7 +43,10 @@ app.post('/voice', async (req, res) => {
   }
 });
 
-app.use('/audio', express.static(path.join(__dirname, 'public', 'audio')));
+// ✅ TEMP: Generate response.mp3 on startup (ONLY FOR TESTING)
+generateSpeech("Hello from Golden Nails AI receptionist, deployed on Render!")
+  .then(url => console.log("Render generated audio at:", url))
+  .catch(err => console.error("Error generating audio on startup:", err));
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
